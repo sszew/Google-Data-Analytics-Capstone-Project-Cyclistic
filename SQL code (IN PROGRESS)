@@ -88,7 +88,7 @@ WITH allmonths AS (
   SELECT *, TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
   FROM `decoded-cove-381306.Months.oct2022`)
 
---I found this page very helpful: https://stackoverflow.com/questions/65247494/calculate-percentages-of-count-in-sql-relative-to-the-category --
+--I found this page very helpful in the following step: https://stackoverflow.com/questions/65247494/calculate-percentages-of-count-in-sql-relative-to-the-category --
   SELECT member_casual, rideable_type, COUNT(*)/(SUM(COUNT(*)) OVER(PARTITION BY member_casual)) AS pct_of_membertype
   FROM (SELECT *
         FROM allmonths
