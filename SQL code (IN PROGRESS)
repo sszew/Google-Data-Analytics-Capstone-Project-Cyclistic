@@ -94,3 +94,99 @@ WITH allmonths AS (
         FROM allmonths
         WHERE allmonths.ridelength > 0 AND allmonths.ridelength < 86400)
   GROUP BY member_casual, rideable_type
+  
+  
+  --------QUERY 3: Distribution of rides by time of day (mid-night, morning, afternoon, evening) by membership type----------
+  
+  WITH allmonths AS (
+  
+  SELECT *, CASE WHEN EXTRACT(HOUR FROM started_at) >= 0 AND EXTRACT(HOUR FROM started_at) < 6 THEN 'mid-night'
+                  WHEN EXTRACT(HOUR FROM started_at) >= 6 AND EXTRACT(HOUR FROM started_at) < 12 THEN 'morning'
+                  WHEN EXTRACT(HOUR FROM started_at) >= 12 AND EXTRACT(HOUR FROM started_at) < 18 THEN 'afternoon'
+                  ELSE 'evening' END AS timeofday, 
+        TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.nov2021`
+  UNION ALL
+  SELECT *, CASE WHEN EXTRACT(HOUR FROM started_at) >= 0 AND EXTRACT(HOUR FROM started_at) < 6 THEN 'mid-night'
+                  WHEN EXTRACT(HOUR FROM started_at) >= 6 AND EXTRACT(HOUR FROM started_at) < 12 THEN 'morning'
+                  WHEN EXTRACT(HOUR FROM started_at) >= 12 AND EXTRACT(HOUR FROM started_at) < 18 THEN 'afternoon'
+                  ELSE 'evening' END AS timeofday, 
+        TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.dec2021`
+  UNION ALL
+  SELECT *, CASE WHEN EXTRACT(HOUR FROM started_at) >= 0 AND EXTRACT(HOUR FROM started_at) < 6 THEN 'mid-night'
+                  WHEN EXTRACT(HOUR FROM started_at) >= 6 AND EXTRACT(HOUR FROM started_at) < 12 THEN 'morning'
+                  WHEN EXTRACT(HOUR FROM started_at) >= 12 AND EXTRACT(HOUR FROM started_at) < 18 THEN 'afternoon'
+                  ELSE 'evening' END AS timeofday, 
+        TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.jan2022`
+  UNION ALL
+  SELECT *, CASE WHEN EXTRACT(HOUR FROM started_at) >= 0 AND EXTRACT(HOUR FROM started_at) < 6 THEN 'mid-night'
+                  WHEN EXTRACT(HOUR FROM started_at) >= 6 AND EXTRACT(HOUR FROM started_at) < 12 THEN 'morning'
+                  WHEN EXTRACT(HOUR FROM started_at) >= 12 AND EXTRACT(HOUR FROM started_at) < 18 THEN 'afternoon'
+                  ELSE 'evening' END AS timeofday, 
+        TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.feb2022`
+  UNION ALL
+  SELECT *, CASE WHEN EXTRACT(HOUR FROM started_at) >= 0 AND EXTRACT(HOUR FROM started_at) < 6 THEN 'mid-night'
+                  WHEN EXTRACT(HOUR FROM started_at) >= 6 AND EXTRACT(HOUR FROM started_at) < 12 THEN 'morning'
+                  WHEN EXTRACT(HOUR FROM started_at) >= 12 AND EXTRACT(HOUR FROM started_at) < 18 THEN 'afternoon'
+                  ELSE 'evening' END AS timeofday, 
+        TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.mar2022`
+  UNION ALL
+  SELECT *, CASE WHEN EXTRACT(HOUR FROM started_at) >= 0 AND EXTRACT(HOUR FROM started_at) < 6 THEN 'mid-night'
+                  WHEN EXTRACT(HOUR FROM started_at) >= 6 AND EXTRACT(HOUR FROM started_at) < 12 THEN 'morning'
+                  WHEN EXTRACT(HOUR FROM started_at) >= 12 AND EXTRACT(HOUR FROM started_at) < 18 THEN 'afternoon'
+                  ELSE 'evening' END AS timeofday, 
+        TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.apr2022`
+  UNION ALL
+  SELECT *, CASE WHEN EXTRACT(HOUR FROM started_at) >= 0 AND EXTRACT(HOUR FROM started_at) < 6 THEN 'mid-night'
+                  WHEN EXTRACT(HOUR FROM started_at) >= 6 AND EXTRACT(HOUR FROM started_at) < 12 THEN 'morning'
+                  WHEN EXTRACT(HOUR FROM started_at) >= 12 AND EXTRACT(HOUR FROM started_at) < 18 THEN 'afternoon'
+                  ELSE 'evening' END AS timeofday, 
+        TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.may2022`
+  UNION ALL
+  SELECT *, CASE WHEN EXTRACT(HOUR FROM started_at) >= 0 AND EXTRACT(HOUR FROM started_at) < 6 THEN 'mid-night'
+                  WHEN EXTRACT(HOUR FROM started_at) >= 6 AND EXTRACT(HOUR FROM started_at) < 12 THEN 'morning'
+                  WHEN EXTRACT(HOUR FROM started_at) >= 12 AND EXTRACT(HOUR FROM started_at) < 18 THEN 'afternoon'
+                  ELSE 'evening' END AS timeofday, 
+        TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.jun2022`
+  UNION ALL
+  SELECT *, CASE WHEN EXTRACT(HOUR FROM started_at) >= 0 AND EXTRACT(HOUR FROM started_at) < 6 THEN 'mid-night'
+                  WHEN EXTRACT(HOUR FROM started_at) >= 6 AND EXTRACT(HOUR FROM started_at) < 12 THEN 'morning'
+                  WHEN EXTRACT(HOUR FROM started_at) >= 12 AND EXTRACT(HOUR FROM started_at) < 18 THEN 'afternoon'
+                  ELSE 'evening' END AS timeofday, 
+        TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.jul2022`
+  UNION ALL
+  SELECT *, CASE WHEN EXTRACT(HOUR FROM started_at) >= 0 AND EXTRACT(HOUR FROM started_at) < 6 THEN 'mid-night'
+                  WHEN EXTRACT(HOUR FROM started_at) >= 6 AND EXTRACT(HOUR FROM started_at) < 12 THEN 'morning'
+                  WHEN EXTRACT(HOUR FROM started_at) >= 12 AND EXTRACT(HOUR FROM started_at) < 18 THEN 'afternoon'
+                  ELSE 'evening' END AS timeofday, 
+        TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.aug2022`
+  UNION ALL
+  SELECT *, CASE WHEN EXTRACT(HOUR FROM started_at) >= 0 AND EXTRACT(HOUR FROM started_at) < 6 THEN 'mid-night'
+                  WHEN EXTRACT(HOUR FROM started_at) >= 6 AND EXTRACT(HOUR FROM started_at) < 12 THEN 'morning'
+                  WHEN EXTRACT(HOUR FROM started_at) >= 12 AND EXTRACT(HOUR FROM started_at) < 18 THEN 'afternoon'
+                  ELSE 'evening' END AS timeofday, 
+        TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.sep2022`
+  UNION ALL
+  SELECT *, CASE WHEN EXTRACT(HOUR FROM started_at) >= 0 AND EXTRACT(HOUR FROM started_at) < 6 THEN 'mid-night'
+                  WHEN EXTRACT(HOUR FROM started_at) >= 6 AND EXTRACT(HOUR FROM started_at) < 12 THEN 'morning'
+                  WHEN EXTRACT(HOUR FROM started_at) >= 12 AND EXTRACT(HOUR FROM started_at) < 18 THEN 'afternoon'
+                  ELSE 'evening' END AS timeofday, 
+        TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.oct2022`)
+
+SELECT member_casual, timeofday, COUNT(*)/(SUM(COUNT(*)) OVER(PARTITION BY member_casual)) AS pct_of_membertype
+  FROM (SELECT *
+        FROM allmonths
+        WHERE allmonths.ridelength > 0 AND allmonths.ridelength < 86400)
+  GROUP BY member_casual, timeofday
+
