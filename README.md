@@ -8,7 +8,7 @@ In order to showcase my capabilities with different software, I completed the pr
 
 1) **R programming:** First, I conducted the data analysis and created the visualizations entirely in R Studio. The visualizations in the Google Slides presentation were the ones I created in R studio. My R script can be found by clicking the "R Script" link above.
 
-2) **SQL and Power BI:** When I completed the project again, I conducted the data analysis in SQL, using Google's BigQuery service, and created the visualizations in Microsoft's Power BI. My SQL script can be found by clicking the "SQL Script" link above and my Power BI visualizations can be found here: 
+2) **SQL and Power BI:** When I completed the project again, I conducted the data analysis in SQL, using Google's BigQuery service, and created the visualizations in Microsoft's Power BI. My SQL script can be found by clicking the "SQL Script" link above, and my Power BI visualizations can be found here: 
 
 _**Please note that the analyses and, thus, results for both of these methods are exactly the same. Completing the project twice was simply a way for me to showcase my skillset and improve my understanding of these tools.**_
 
