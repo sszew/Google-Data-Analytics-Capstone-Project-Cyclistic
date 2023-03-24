@@ -1,3 +1,145 @@
+                                                               <ins>DATA CLEANING</ins>
+                                                            
+----------QUERY 1: Checking for invalid entries in the "member_casual" column, referring to the membership status of a user. A user can either----------
+----------be a "member" or a "casual" rider. There were no invalid entries in the dataset.----------
+
+WITH allmonths AS (
+  
+  SELECT *
+  FROM `decoded-cove-381306.Months.nov2021`
+  UNION ALL
+  SELECT *
+  FROM `decoded-cove-381306.Months.dec2021`
+  UNION ALL
+  SELECT *
+  FROM `decoded-cove-381306.Months.jan2022`
+  UNION ALL
+  SELECT *
+  FROM `decoded-cove-381306.Months.feb2022`
+  UNION ALL
+  SELECT *
+  FROM `decoded-cove-381306.Months.mar2022`
+  UNION ALL
+  SELECT *
+  FROM `decoded-cove-381306.Months.apr2022`
+  UNION ALL
+  SELECT *
+  FROM `decoded-cove-381306.Months.may2022`
+  UNION ALL
+  SELECT *
+  FROM `decoded-cove-381306.Months.jun2022`
+  UNION ALL
+  SELECT *
+  FROM `decoded-cove-381306.Months.jul2022`
+  UNION ALL
+  SELECT *
+  FROM `decoded-cove-381306.Months.aug2022`
+  UNION ALL
+  SELECT *
+  FROM `decoded-cove-381306.Months.sep2022`
+  UNION ALL
+  SELECT *
+  FROM `decoded-cove-381306.Months.oct2022`)
+
+  SELECT DISTINCT member_casual
+  FROM allmonths;
+
+
+----------QUERY 2: Checking for invalid entries in the "rideable_type" column, referring to the type of bike used. A bike can either----------
+----------be "electric_bike", "docked_bike", or "classid_bike". There were no invalid entries in the dataset.----------
+
+WITH allmonths AS (
+  
+  SELECT *
+  FROM `decoded-cove-381306.Months.nov2021`
+  UNION ALL
+  SELECT *
+  FROM `decoded-cove-381306.Months.dec2021`
+  UNION ALL
+  SELECT *
+  FROM `decoded-cove-381306.Months.jan2022`
+  UNION ALL
+  SELECT *
+  FROM `decoded-cove-381306.Months.feb2022`
+  UNION ALL
+  SELECT *
+  FROM `decoded-cove-381306.Months.mar2022`
+  UNION ALL
+  SELECT *
+  FROM `decoded-cove-381306.Months.apr2022`
+  UNION ALL
+  SELECT *
+  FROM `decoded-cove-381306.Months.may2022`
+  UNION ALL
+  SELECT *
+  FROM `decoded-cove-381306.Months.jun2022`
+  UNION ALL
+  SELECT *
+  FROM `decoded-cove-381306.Months.jul2022`
+  UNION ALL
+  SELECT *
+  FROM `decoded-cove-381306.Months.aug2022`
+  UNION ALL
+  SELECT *
+  FROM `decoded-cove-381306.Months.sep2022`
+  UNION ALL
+  SELECT *
+  FROM `decoded-cove-381306.Months.oct2022`)
+
+  SELECT DISTINCT rideable_type
+  FROM allmonths;
+
+
+-----------QUERY 3: Checking whether there were any invalid entries in the "started_at" and "ended_at" columns, referring to the dates/times----------
+-----------that a ride began and ended, respectively. This query creates a new column, "ridelength", which subtracts "ended_at" from "started_at",----------
+-----------resulting in the duration of a ride in seconds. Minimum and maximum ride lengths are then calculated to identify the range of entries.----------
+-----------Negative ride lengths are nonsensical because a ride cannot end at an earlier time than it began.----------
+-----------Conversely, ride lengths that are too long are also suspect. What constitutes "too long" will be addressed in later queries.----------
+
+
+WITH allmonths AS (
+  
+  SELECT *, TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.nov2021`
+  UNION ALL
+  SELECT *, TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.dec2021`
+  UNION ALL
+  SELECT *, TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.jan2022`
+  UNION ALL
+  SELECT *, TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.feb2022`
+  UNION ALL
+  SELECT *, TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.mar2022`
+  UNION ALL
+  SELECT *, TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.apr2022`
+  UNION ALL
+  SELECT *, TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.may2022`
+  UNION ALL
+  SELECT *, TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.jun2022`
+  UNION ALL
+  SELECT *, TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.jul2022`
+  UNION ALL
+  SELECT *, TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.aug2022`
+  UNION ALL
+  SELECT *, TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.sep2022`
+  UNION ALL
+  SELECT *, TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.oct2022`)
+
+  SELECT MIN(ridelength) AS min_ridelength, MAX(ridelength) AS max_ridelength
+  FROM allmonths;
+
+
+
 --------QUERY 1: NUMBER OF RIDERS AND THE AVERAGE, MEDIAN, AND STANDARD DEVIATION OF THE RIDELENGTHS IN EACH MEMBERSHIP GROUP (MEMBER VS. CASUAL)
 OVER THE PERIOD OF NOV. 2021 - OCT. 2022------------
 
