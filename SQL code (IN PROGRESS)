@@ -1,4 +1,4 @@
-                                                               <ins>DATA CLEANING</ins>
+                                                               DATA CLEANING
                                                             
 ----------QUERY 1: Checking for invalid entries in the "member_casual" column, referring to the membership status of a user. A user can either----------
 ----------be a "member" or a "casual" rider. There were no invalid entries in the dataset.----------
@@ -138,10 +138,12 @@ WITH allmonths AS (
   SELECT MIN(ridelength) AS min_ridelength, MAX(ridelength) AS max_ridelength
   FROM allmonths;
 
+                                                              ANALYSIS
+                                                              
+                                                         General Differences
 
-
---------QUERY 1: NUMBER OF RIDERS AND THE AVERAGE, MEDIAN, AND STANDARD DEVIATION OF THE RIDELENGTHS IN EACH MEMBERSHIP GROUP (MEMBER VS. CASUAL)
-OVER THE PERIOD OF NOV. 2021 - OCT. 2022------------
+----------QUERY 4: Calculating the number of riders, mean ride lengths (in minutes), median ride lengths (in minutes), and----------
+----------standard deviations of the ride lengths (in minutes), grouped by membership type.----------
 
 WITH allmonths AS (
   
@@ -181,7 +183,8 @@ WITH allmonths AS (
   SELECT *, TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
   FROM `decoded-cove-381306.Months.oct2022`)
 
---As discussed at https://iamhectorotero.github.io/median-and-group-by/, PERCENTILE_CONT is a non-aggregate function, so we cannot use it along with a GROUP BY clause to calculate the median  --
+----------As discussed at https://iamhectorotero.github.io/median-and-group-by/, PERCENTILE_CONT is a non-aggregate function,----------
+----------so we cannot use it along with a GROUP BY clause to calculate the median.----------
 
   SELECT member_casual, COUNT(*) AS count, median_ridelength/60 AS med_ridelength, AVG(ridelength)/60 AS avg_ridelenth, STDDEV(ridelength)/60 AS sd_ridelength
   FROM (SELECT *, PERCENTILE_CONT(ridelength, 0.5) OVER(PARTITION BY member_casual) AS median_ridelength
@@ -191,7 +194,8 @@ WITH allmonths AS (
   
   
   
-  --------QUERY 2: PROPORTION OF EACH MEMBERSHIP GROUP (MEMBER VS. CASUAL) USING EACH TYPE OF BIKE (CLASSIC, ELECTRIC, DOCKED)-------------
+  ----------QUERY 5: Proportion of each membership group using a particular bike.-------------
+  
   WITH allmonths AS (
   
   SELECT *, TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
@@ -230,7 +234,7 @@ WITH allmonths AS (
   SELECT *, TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
   FROM `decoded-cove-381306.Months.oct2022`)
 
---I found this page very helpful in the following step: https://stackoverflow.com/questions/65247494/calculate-percentages-of-count-in-sql-relative-to-the-category --
+----------I found this page very helpful in the following step: https://stackoverflow.com/questions/65247494/calculate-percentages-of-count-in-sql-relative-to-the-category ----------
   SELECT member_casual, rideable_type, COUNT(*)/(SUM(COUNT(*)) OVER(PARTITION BY member_casual)) AS pct_of_membertype
   FROM (SELECT *
         FROM allmonths
@@ -238,7 +242,10 @@ WITH allmonths AS (
   GROUP BY member_casual, rideable_type
   
   
-  --------QUERY 3: Distribution of rides by time of day (mid-night, morning, afternoon, evening) by membership type----------
+                                                      Differences over the Day
+  
+ ----------QUERY 6: Distribution of rides by time of day by membership type. "mid-night" is 12 AM to 6 AM, "morning" is 6 AM to 12 PM,----------
+ ----------"afternoon" is 12 PM to 6 PM, "evening" is 6 PM to 12 AM.----------
   
   WITH allmonths AS (
   
@@ -331,4 +338,11 @@ SELECT member_casual, timeofday, COUNT(*)/(SUM(COUNT(*)) OVER(PARTITION BY membe
         FROM allmonths
         WHERE allmonths.ridelength > 0 AND allmonths.ridelength < 86400)
   GROUP BY member_casual, timeofday
+  
+  
+  
+  
+                                                  Differences over the Week
+                                                  
+                                                  
 
