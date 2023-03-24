@@ -94,7 +94,8 @@ WITH allmonths AS (
 -----------that a ride began and ended, respectively. This query creates a new column, "ridelength", which subtracts "ended_at" from "started_at",----------
 -----------resulting in the duration of a ride in seconds. Minimum and maximum ride lengths are then calculated to identify the range of entries.----------
 -----------Negative ride lengths are nonsensical because a ride cannot end at an earlier time than it began.----------
------------Conversely, ride lengths that are too long are also suspect. What constitutes "too long" will be addressed in later queries.----------
+-----------Conversely, ride lengths that are too long are also suspect. In future queries, we will filter out all rides with----------
+-----------ride lengths less than or equal to zero and ride lengths that are greater than or equal to 24 hours (or, 86400 seconds).----------
 
 
 WITH allmonths AS (
@@ -138,7 +139,13 @@ WITH allmonths AS (
   SELECT MIN(ridelength) AS min_ridelength, MAX(ridelength) AS max_ridelength
   FROM allmonths;
 
+
+
+
+
                                                               ANALYSIS
+                                                              
+                                                              
                                                               
                                                          General Differences
 
@@ -194,7 +201,7 @@ WITH allmonths AS (
   
   
   
-  ----------QUERY 5: Proportion of each membership group using a particular bike.-------------
+  ----------QUERY 5: Proportion of each membership type using a particular bike.-------------
   
   WITH allmonths AS (
   
@@ -242,9 +249,12 @@ WITH allmonths AS (
   GROUP BY member_casual, rideable_type
   
   
+  
+  
+  
                                                       Differences over the Day
   
- ----------QUERY 6: Distribution of rides by time of day by membership type. "mid-night" is 12 AM to 6 AM, "morning" is 6 AM to 12 PM,----------
+ ----------QUERY 6: Distribution of rides by time of day and membership type. "mid-night" is 12 AM to 6 AM, "morning" is 6 AM to 12 PM,----------
  ----------"afternoon" is 12 PM to 6 PM, "evening" is 6 PM to 12 AM.----------
   
   WITH allmonths AS (
@@ -343,6 +353,943 @@ SELECT member_casual, timeofday, COUNT(*)/(SUM(COUNT(*)) OVER(PARTITION BY membe
   
   
                                                   Differences over the Week
-                                                  
+
+----------QUERY 7: Distribution of rides by day of the week and membership type.----------
+
+WITH allmonths AS (
+  
+  SELECT *, EXTRACT(DAYOFWEEK from started_at) AS dayofweek, TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.nov2021`
+  UNION ALL
+  SELECT *, EXTRACT(DAYOFWEEK from started_at) AS dayofweek, TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.dec2021`
+  UNION ALL
+  SELECT *, EXTRACT(DAYOFWEEK from started_at) AS dayofweek, TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.jan2022`
+  UNION ALL
+  SELECT *, EXTRACT(DAYOFWEEK from started_at) AS dayofweek, TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.feb2022`
+  UNION ALL
+  SELECT *, EXTRACT(DAYOFWEEK from started_at) AS dayofweek, TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.mar2022`
+  UNION ALL
+  SELECT *, EXTRACT(DAYOFWEEK from started_at) AS dayofweek, TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.apr2022`
+  UNION ALL
+  SELECT *, EXTRACT(DAYOFWEEK from started_at) AS dayofweek, TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.may2022`
+  UNION ALL
+  SELECT *, EXTRACT(DAYOFWEEK from started_at) AS dayofweek, TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.jun2022`
+  UNION ALL
+  SELECT *, EXTRACT(DAYOFWEEK from started_at) AS dayofweek, TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.jul2022`
+  UNION ALL
+  SELECT *, EXTRACT(DAYOFWEEK from started_at) AS dayofweek, TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.aug2022`
+  UNION ALL
+  SELECT *, EXTRACT(DAYOFWEEK from started_at) AS dayofweek, TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.sep2022`
+  UNION ALL
+  SELECT *, EXTRACT(DAYOFWEEK from started_at) AS dayofweek, TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.oct2022`)
+
+----------"dayofweek" column lists the day of the week as a number, where 1 = 'Sunday', 2 = 'Monday', 3 = 'Tuesday', etc. ----------
+
+  SELECT member_casual, dayofweek, COUNT(*)/(SUM(COUNT(*)) OVER(PARTITION BY member_casual)) AS pct_of_membertype
+  FROM (SELECT *
+        FROM allmonths
+        WHERE allmonths.ridelength > 0 AND allmonths.ridelength < 86400)
+  GROUP BY member_casual, dayofweek
+  ORDER BY member_casual, dayofweek;
+  
+  
+  
+  ----------QUERY 8: Standard deviation of the daily percentages (from Query 7) by membership type.----------
+  
+  WITH allmonths AS (
+  
+  SELECT *, EXTRACT(DAYOFWEEK from started_at) AS dayofweek, TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.nov2021`
+  UNION ALL
+  SELECT *, EXTRACT(DAYOFWEEK from started_at) AS dayofweek, TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.dec2021`
+  UNION ALL
+  SELECT *, EXTRACT(DAYOFWEEK from started_at) AS dayofweek, TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.jan2022`
+  UNION ALL
+  SELECT *, EXTRACT(DAYOFWEEK from started_at) AS dayofweek, TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.feb2022`
+  UNION ALL
+  SELECT *, EXTRACT(DAYOFWEEK from started_at) AS dayofweek, TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.mar2022`
+  UNION ALL
+  SELECT *, EXTRACT(DAYOFWEEK from started_at) AS dayofweek, TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.apr2022`
+  UNION ALL
+  SELECT *, EXTRACT(DAYOFWEEK from started_at) AS dayofweek, TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.may2022`
+  UNION ALL
+  SELECT *, EXTRACT(DAYOFWEEK from started_at) AS dayofweek, TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.jun2022`
+  UNION ALL
+  SELECT *, EXTRACT(DAYOFWEEK from started_at) AS dayofweek, TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.jul2022`
+  UNION ALL
+  SELECT *, EXTRACT(DAYOFWEEK from started_at) AS dayofweek, TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.aug2022`
+  UNION ALL
+  SELECT *, EXTRACT(DAYOFWEEK from started_at) AS dayofweek, TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.sep2022`
+  UNION ALL
+  SELECT *, EXTRACT(DAYOFWEEK from started_at) AS dayofweek, TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.oct2022`)
+
+----------"dayofweek" column lists the day of the week as a number, where 1 = 'Sunday', 2 = 'Monday', 3 = 'Tuesday', etc. ----------
+----------"sd" refers to the standard deviation of the daily percentages----------
+
+SELECT member_casual, STDDEV(pct_of_membertype) AS sd_daily_percentages
+FROM (
+  SELECT member_casual, dayofweek, COUNT(*)/(SUM(COUNT(*)) OVER(PARTITION BY member_casual)) AS pct_of_membertype
+  FROM (SELECT *
+        FROM allmonths
+        WHERE allmonths.ridelength > 0 AND allmonths.ridelength < 86400)
+  GROUP BY member_casual, dayofweek
+)
+GROUP BY member_casual;
+  
+  
+  
+  
+----------QUERY 9: Median ridelength (in minutes) by day of week and membership type.-----------
+
+WITH allmonths AS (
+  
+  SELECT *, EXTRACT(DAYOFWEEK from started_at) AS dayofweek, TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.nov2021`
+  UNION ALL
+  SELECT *, EXTRACT(DAYOFWEEK from started_at) AS dayofweek, TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.dec2021`
+  UNION ALL
+  SELECT *, EXTRACT(DAYOFWEEK from started_at) AS dayofweek, TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.jan2022`
+  UNION ALL
+  SELECT *, EXTRACT(DAYOFWEEK from started_at) AS dayofweek, TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.feb2022`
+  UNION ALL
+  SELECT *, EXTRACT(DAYOFWEEK from started_at) AS dayofweek, TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.mar2022`
+  UNION ALL
+  SELECT *, EXTRACT(DAYOFWEEK from started_at) AS dayofweek, TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.apr2022`
+  UNION ALL
+  SELECT *, EXTRACT(DAYOFWEEK from started_at) AS dayofweek, TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.may2022`
+  UNION ALL
+  SELECT *, EXTRACT(DAYOFWEEK from started_at) AS dayofweek, TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.jun2022`
+  UNION ALL
+  SELECT *, EXTRACT(DAYOFWEEK from started_at) AS dayofweek, TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.jul2022`
+  UNION ALL
+  SELECT *, EXTRACT(DAYOFWEEK from started_at) AS dayofweek, TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.aug2022`
+  UNION ALL
+  SELECT *, EXTRACT(DAYOFWEEK from started_at) AS dayofweek, TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.sep2022`
+  UNION ALL
+  SELECT *, EXTRACT(DAYOFWEEK from started_at) AS dayofweek, TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.oct2022`)
+
+
+  SELECT member_casual, dayofweek, median_ridelength/60 AS med_ridelength
+  FROM (SELECT *, PERCENTILE_CONT(ridelength, 0.5) OVER(PARTITION BY member_casual, dayofweek) AS median_ridelength
+        FROM allmonths
+        WHERE allmonths.ridelength > 0 AND allmonths.ridelength < 86400)
+  GROUP BY member_casual, dayofweek, med_ridelength
+  ORDER BY member_casual, dayofweek;
+  
+  
+  
+  
+  ----------QUERY 10: Standard deviation of the daily medians (from Query 9) by membership type.----------
+  
+  WITH allmonths AS (
+  
+  SELECT *, EXTRACT(DAYOFWEEK from started_at) AS dayofweek, TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.nov2021`
+  UNION ALL
+  SELECT *, EXTRACT(DAYOFWEEK from started_at) AS dayofweek, TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.dec2021`
+  UNION ALL
+  SELECT *, EXTRACT(DAYOFWEEK from started_at) AS dayofweek, TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.jan2022`
+  UNION ALL
+  SELECT *, EXTRACT(DAYOFWEEK from started_at) AS dayofweek, TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.feb2022`
+  UNION ALL
+  SELECT *, EXTRACT(DAYOFWEEK from started_at) AS dayofweek, TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.mar2022`
+  UNION ALL
+  SELECT *, EXTRACT(DAYOFWEEK from started_at) AS dayofweek, TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.apr2022`
+  UNION ALL
+  SELECT *, EXTRACT(DAYOFWEEK from started_at) AS dayofweek, TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.may2022`
+  UNION ALL
+  SELECT *, EXTRACT(DAYOFWEEK from started_at) AS dayofweek, TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.jun2022`
+  UNION ALL
+  SELECT *, EXTRACT(DAYOFWEEK from started_at) AS dayofweek, TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.jul2022`
+  UNION ALL
+  SELECT *, EXTRACT(DAYOFWEEK from started_at) AS dayofweek, TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.aug2022`
+  UNION ALL
+  SELECT *, EXTRACT(DAYOFWEEK from started_at) AS dayofweek, TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.sep2022`
+  UNION ALL
+  SELECT *, EXTRACT(DAYOFWEEK from started_at) AS dayofweek, TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.oct2022`)
+
+SELECT member_casual, STDDEV(med_ridelength) AS med_daily_ridelength
+FROM (
+  SELECT member_casual, dayofweek, median_ridelength/60 AS med_ridelength
+  FROM (SELECT *, PERCENTILE_CONT(ridelength, 0.5) OVER(PARTITION BY member_casual, dayofweek) AS median_ridelength
+        FROM allmonths
+        WHERE allmonths.ridelength > 0 AND allmonths.ridelength < 86400)
+  GROUP BY member_casual, dayofweek, med_ridelength
+  ORDER BY member_casual, dayofweek)
+
+GROUP BY member_casual;
+
+
+
+
+
+-----------QUERY 11: Percentage of rides on weekdays vs. weekends (Saturday and Sunday) by membership type.----------
+
+WITH allmonths AS (
+  
+  SELECT *, CASE WHEN EXTRACT(DAYOFWEEK from started_at) BETWEEN 2 AND 6 THEN 'weekday'
+              ELSE 'weekend' END AS weekpart, TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.nov2021`
+  UNION ALL
+  SELECT *, CASE WHEN EXTRACT(DAYOFWEEK from started_at) BETWEEN 2 AND 6 THEN 'weekday'
+              ELSE 'weekend' END AS weekpart, TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.dec2021`
+  UNION ALL
+  SELECT *, CASE WHEN EXTRACT(DAYOFWEEK from started_at) BETWEEN 2 AND 6 THEN 'weekday'
+              ELSE 'weekend' END AS weekpart, TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.jan2022`
+  UNION ALL
+  SELECT *, CASE WHEN EXTRACT(DAYOFWEEK from started_at) BETWEEN 2 AND 6 THEN 'weekday'
+              ELSE 'weekend' END AS weekpart, TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.feb2022`
+  UNION ALL
+  SELECT *, CASE WHEN EXTRACT(DAYOFWEEK from started_at) BETWEEN 2 AND 6 THEN 'weekday'
+              ELSE 'weekend' END AS weekpart, TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.mar2022`
+  UNION ALL
+  SELECT *, CASE WHEN EXTRACT(DAYOFWEEK from started_at) BETWEEN 2 AND 6 THEN 'weekday'
+              ELSE 'weekend' END AS weekpart, TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.apr2022`
+  UNION ALL
+  SELECT *, CASE WHEN EXTRACT(DAYOFWEEK from started_at) BETWEEN 2 AND 6 THEN 'weekday'
+              ELSE 'weekend' END AS weekpart, TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.may2022`
+  UNION ALL
+  SELECT *, CASE WHEN EXTRACT(DAYOFWEEK from started_at) BETWEEN 2 AND 6 THEN 'weekday'
+              ELSE 'weekend' END AS weekpart, TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.jun2022`
+  UNION ALL
+  SELECT *, CASE WHEN EXTRACT(DAYOFWEEK from started_at) BETWEEN 2 AND 6 THEN 'weekday'
+              ELSE 'weekend' END AS weekpart, TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.jul2022`
+  UNION ALL
+  SELECT *, CASE WHEN EXTRACT(DAYOFWEEK from started_at) BETWEEN 2 AND 6 THEN 'weekday'
+              ELSE 'weekend' END AS weekpart, TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.aug2022`
+  UNION ALL
+  SELECT *, CASE WHEN EXTRACT(DAYOFWEEK from started_at) BETWEEN 2 AND 6 THEN 'weekday'
+              ELSE 'weekend' END AS weekpart, TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.sep2022`
+  UNION ALL
+  SELECT *, CASE WHEN EXTRACT(DAYOFWEEK from started_at) BETWEEN 2 AND 6 THEN 'weekday'
+              ELSE 'weekend' END AS weekpart, TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.oct2022`)
+
+----------"weekday" column lists whether a ride took place on a weekday or a weekend (Saturday or Sunday)----------
+
+  SELECT member_casual, weekpart, COUNT(*)/(SUM(COUNT(*)) OVER(PARTITION BY member_casual)) AS pct_of_membertype
+  FROM (SELECT *
+        FROM allmonths
+        WHERE allmonths.ridelength > 0 AND allmonths.ridelength < 86400)
+  GROUP BY member_casual, weekpart
+  ORDER BY member_casual, weekpart;
+  
+  
+  
+  
+  ----------QUERY 12: Median ride length (in minutes) on weekdays vs. weekends (Saturday and Sunday) by memberhsip type.----------
+  
+  WITH allmonths AS (
+  
+  SELECT *, CASE WHEN EXTRACT(DAYOFWEEK from started_at) BETWEEN 2 AND 6 THEN 'weekday'
+              ELSE 'weekend' END AS weekpart, TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.nov2021`
+  UNION ALL
+  SELECT *, CASE WHEN EXTRACT(DAYOFWEEK from started_at) BETWEEN 2 AND 6 THEN 'weekday'
+              ELSE 'weekend' END AS weekpart, TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.dec2021`
+  UNION ALL
+  SELECT *, CASE WHEN EXTRACT(DAYOFWEEK from started_at) BETWEEN 2 AND 6 THEN 'weekday'
+              ELSE 'weekend' END AS weekpart, TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.jan2022`
+  UNION ALL
+  SELECT *, CASE WHEN EXTRACT(DAYOFWEEK from started_at) BETWEEN 2 AND 6 THEN 'weekday'
+              ELSE 'weekend' END AS weekpart, TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.feb2022`
+  UNION ALL
+  SELECT *, CASE WHEN EXTRACT(DAYOFWEEK from started_at) BETWEEN 2 AND 6 THEN 'weekday'
+              ELSE 'weekend' END AS weekpart, TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.mar2022`
+  UNION ALL
+  SELECT *, CASE WHEN EXTRACT(DAYOFWEEK from started_at) BETWEEN 2 AND 6 THEN 'weekday'
+              ELSE 'weekend' END AS weekpart, TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.apr2022`
+  UNION ALL
+  SELECT *, CASE WHEN EXTRACT(DAYOFWEEK from started_at) BETWEEN 2 AND 6 THEN 'weekday'
+              ELSE 'weekend' END AS weekpart, TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.may2022`
+  UNION ALL
+  SELECT *, CASE WHEN EXTRACT(DAYOFWEEK from started_at) BETWEEN 2 AND 6 THEN 'weekday'
+              ELSE 'weekend' END AS weekpart, TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.jun2022`
+  UNION ALL
+  SELECT *, CASE WHEN EXTRACT(DAYOFWEEK from started_at) BETWEEN 2 AND 6 THEN 'weekday'
+              ELSE 'weekend' END AS weekpart, TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.jul2022`
+  UNION ALL
+  SELECT *, CASE WHEN EXTRACT(DAYOFWEEK from started_at) BETWEEN 2 AND 6 THEN 'weekday'
+              ELSE 'weekend' END AS weekpart, TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.aug2022`
+  UNION ALL
+  SELECT *, CASE WHEN EXTRACT(DAYOFWEEK from started_at) BETWEEN 2 AND 6 THEN 'weekday'
+              ELSE 'weekend' END AS weekpart, TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.sep2022`
+  UNION ALL
+  SELECT *, CASE WHEN EXTRACT(DAYOFWEEK from started_at) BETWEEN 2 AND 6 THEN 'weekday'
+              ELSE 'weekend' END AS weekpart, TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.oct2022`)
+
+----------"weekday" column lists whether a ride took place on a weekday or a weekend (Saturday or Sunday)----------
+
+  SELECT member_casual, weekpart, median_ridelength/60 AS med_ridelength
+  FROM (SELECT *, PERCENTILE_CONT(ridelength, 0.5) OVER(PARTITION BY member_casual, weekpart) AS median_ridelength
+        FROM allmonths
+        WHERE allmonths.ridelength > 0 AND allmonths.ridelength < 86400)
+  GROUP BY member_casual, weekpart, med_ridelength
+  ORDER BY member_casual, weekpart;
+  
+  
+  
+  
+                                                            Differences over the Year
+                                                            
+  -----------QUERY 13: Number of rides in each month by membership type.----------
+  
+  WITH allmonths AS (
+  
+  SELECT *, CASE WHEN EXTRACT(MONTH from started_at) = 11 THEN 'A' 
+                 WHEN EXTRACT(MONTH from started_at) = 12 THEN 'B'
+                 WHEN EXTRACT(MONTH from started_at) = 1 THEN 'C'
+                 WHEN EXTRACT(MONTH from started_at) = 2 THEN 'D'
+                 WHEN EXTRACT(MONTH from started_at) = 3 THEN 'E'
+                 WHEN EXTRACT(MONTH from started_at) = 4 THEN 'F'
+                 WHEN EXTRACT(MONTH from started_at) = 5 THEN 'G'
+                 WHEN EXTRACT(MONTH from started_at) = 6 THEN 'H'
+                 WHEN EXTRACT(MONTH from started_at) = 7 THEN 'I'
+                 WHEN EXTRACT(MONTH from started_at) = 8 THEN 'J'
+                 WHEN EXTRACT(MONTH from started_at) = 9 THEN 'K'
+                 ELSE 'L' END AS month, 
+          TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.nov2021`
+  UNION ALL
+  SELECT *, CASE WHEN EXTRACT(MONTH from started_at) = 11 THEN 'A' 
+                 WHEN EXTRACT(MONTH from started_at) = 12 THEN 'B'
+                 WHEN EXTRACT(MONTH from started_at) = 1 THEN 'C'
+                 WHEN EXTRACT(MONTH from started_at) = 2 THEN 'D'
+                 WHEN EXTRACT(MONTH from started_at) = 3 THEN 'E'
+                 WHEN EXTRACT(MONTH from started_at) = 4 THEN 'F'
+                 WHEN EXTRACT(MONTH from started_at) = 5 THEN 'G'
+                 WHEN EXTRACT(MONTH from started_at) = 6 THEN 'H'
+                 WHEN EXTRACT(MONTH from started_at) = 7 THEN 'I'
+                 WHEN EXTRACT(MONTH from started_at) = 8 THEN 'J'
+                 WHEN EXTRACT(MONTH from started_at) = 9 THEN 'K'
+                 ELSE 'L' END AS month, 
+          TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.dec2021`
+  UNION ALL
+  SELECT *, CASE WHEN EXTRACT(MONTH from started_at) = 11 THEN 'A' 
+                 WHEN EXTRACT(MONTH from started_at) = 12 THEN 'B'
+                 WHEN EXTRACT(MONTH from started_at) = 1 THEN 'C'
+                 WHEN EXTRACT(MONTH from started_at) = 2 THEN 'D'
+                 WHEN EXTRACT(MONTH from started_at) = 3 THEN 'E'
+                 WHEN EXTRACT(MONTH from started_at) = 4 THEN 'F'
+                 WHEN EXTRACT(MONTH from started_at) = 5 THEN 'G'
+                 WHEN EXTRACT(MONTH from started_at) = 6 THEN 'H'
+                 WHEN EXTRACT(MONTH from started_at) = 7 THEN 'I'
+                 WHEN EXTRACT(MONTH from started_at) = 8 THEN 'J'
+                 WHEN EXTRACT(MONTH from started_at) = 9 THEN 'K'
+                 ELSE 'L' END AS month, 
+          TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.jan2022`
+  UNION ALL
+  SELECT *, CASE WHEN EXTRACT(MONTH from started_at) = 11 THEN 'A' 
+                 WHEN EXTRACT(MONTH from started_at) = 12 THEN 'B'
+                 WHEN EXTRACT(MONTH from started_at) = 1 THEN 'C'
+                 WHEN EXTRACT(MONTH from started_at) = 2 THEN 'D'
+                 WHEN EXTRACT(MONTH from started_at) = 3 THEN 'E'
+                 WHEN EXTRACT(MONTH from started_at) = 4 THEN 'F'
+                 WHEN EXTRACT(MONTH from started_at) = 5 THEN 'G'
+                 WHEN EXTRACT(MONTH from started_at) = 6 THEN 'H'
+                 WHEN EXTRACT(MONTH from started_at) = 7 THEN 'I'
+                 WHEN EXTRACT(MONTH from started_at) = 8 THEN 'J'
+                 WHEN EXTRACT(MONTH from started_at) = 9 THEN 'K'
+                 ELSE 'L' END AS month, 
+          TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.feb2022`
+  UNION ALL
+  SELECT *, CASE WHEN EXTRACT(MONTH from started_at) = 11 THEN 'A' 
+                 WHEN EXTRACT(MONTH from started_at) = 12 THEN 'B'
+                 WHEN EXTRACT(MONTH from started_at) = 1 THEN 'C'
+                 WHEN EXTRACT(MONTH from started_at) = 2 THEN 'D'
+                 WHEN EXTRACT(MONTH from started_at) = 3 THEN 'E'
+                 WHEN EXTRACT(MONTH from started_at) = 4 THEN 'F'
+                 WHEN EXTRACT(MONTH from started_at) = 5 THEN 'G'
+                 WHEN EXTRACT(MONTH from started_at) = 6 THEN 'H'
+                 WHEN EXTRACT(MONTH from started_at) = 7 THEN 'I'
+                 WHEN EXTRACT(MONTH from started_at) = 8 THEN 'J'
+                 WHEN EXTRACT(MONTH from started_at) = 9 THEN 'K'
+                 ELSE 'L' END AS month, 
+          TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.mar2022`
+  UNION ALL
+  SELECT *, CASE WHEN EXTRACT(MONTH from started_at) = 11 THEN 'A' 
+                 WHEN EXTRACT(MONTH from started_at) = 12 THEN 'B'
+                 WHEN EXTRACT(MONTH from started_at) = 1 THEN 'C'
+                 WHEN EXTRACT(MONTH from started_at) = 2 THEN 'D'
+                 WHEN EXTRACT(MONTH from started_at) = 3 THEN 'E'
+                 WHEN EXTRACT(MONTH from started_at) = 4 THEN 'F'
+                 WHEN EXTRACT(MONTH from started_at) = 5 THEN 'G'
+                 WHEN EXTRACT(MONTH from started_at) = 6 THEN 'H'
+                 WHEN EXTRACT(MONTH from started_at) = 7 THEN 'I'
+                 WHEN EXTRACT(MONTH from started_at) = 8 THEN 'J'
+                 WHEN EXTRACT(MONTH from started_at) = 9 THEN 'K'
+                 ELSE 'L' END AS month, 
+          TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.apr2022`
+  UNION ALL
+  SELECT *, CASE WHEN EXTRACT(MONTH from started_at) = 11 THEN 'A' 
+                 WHEN EXTRACT(MONTH from started_at) = 12 THEN 'B'
+                 WHEN EXTRACT(MONTH from started_at) = 1 THEN 'C'
+                 WHEN EXTRACT(MONTH from started_at) = 2 THEN 'D'
+                 WHEN EXTRACT(MONTH from started_at) = 3 THEN 'E'
+                 WHEN EXTRACT(MONTH from started_at) = 4 THEN 'F'
+                 WHEN EXTRACT(MONTH from started_at) = 5 THEN 'G'
+                 WHEN EXTRACT(MONTH from started_at) = 6 THEN 'H'
+                 WHEN EXTRACT(MONTH from started_at) = 7 THEN 'I'
+                 WHEN EXTRACT(MONTH from started_at) = 8 THEN 'J'
+                 WHEN EXTRACT(MONTH from started_at) = 9 THEN 'K'
+                 ELSE 'L' END AS month, 
+          TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.may2022`
+  UNION ALL
+  SELECT *, CASE WHEN EXTRACT(MONTH from started_at) = 11 THEN 'A' 
+                 WHEN EXTRACT(MONTH from started_at) = 12 THEN 'B'
+                 WHEN EXTRACT(MONTH from started_at) = 1 THEN 'C'
+                 WHEN EXTRACT(MONTH from started_at) = 2 THEN 'D'
+                 WHEN EXTRACT(MONTH from started_at) = 3 THEN 'E'
+                 WHEN EXTRACT(MONTH from started_at) = 4 THEN 'F'
+                 WHEN EXTRACT(MONTH from started_at) = 5 THEN 'G'
+                 WHEN EXTRACT(MONTH from started_at) = 6 THEN 'H'
+                 WHEN EXTRACT(MONTH from started_at) = 7 THEN 'I'
+                 WHEN EXTRACT(MONTH from started_at) = 8 THEN 'J'
+                 WHEN EXTRACT(MONTH from started_at) = 9 THEN 'K'
+                 ELSE 'L' END AS month, 
+          TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.jun2022`
+  UNION ALL
+  SELECT *, CASE WHEN EXTRACT(MONTH from started_at) = 11 THEN 'A' 
+                 WHEN EXTRACT(MONTH from started_at) = 12 THEN 'B'
+                 WHEN EXTRACT(MONTH from started_at) = 1 THEN 'C'
+                 WHEN EXTRACT(MONTH from started_at) = 2 THEN 'D'
+                 WHEN EXTRACT(MONTH from started_at) = 3 THEN 'E'
+                 WHEN EXTRACT(MONTH from started_at) = 4 THEN 'F'
+                 WHEN EXTRACT(MONTH from started_at) = 5 THEN 'G'
+                 WHEN EXTRACT(MONTH from started_at) = 6 THEN 'H'
+                 WHEN EXTRACT(MONTH from started_at) = 7 THEN 'I'
+                 WHEN EXTRACT(MONTH from started_at) = 8 THEN 'J'
+                 WHEN EXTRACT(MONTH from started_at) = 9 THEN 'K'
+                 ELSE 'L' END AS month, 
+          TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.jul2022`
+  UNION ALL
+  SELECT *, CASE WHEN EXTRACT(MONTH from started_at) = 11 THEN 'A' 
+                 WHEN EXTRACT(MONTH from started_at) = 12 THEN 'B'
+                 WHEN EXTRACT(MONTH from started_at) = 1 THEN 'C'
+                 WHEN EXTRACT(MONTH from started_at) = 2 THEN 'D'
+                 WHEN EXTRACT(MONTH from started_at) = 3 THEN 'E'
+                 WHEN EXTRACT(MONTH from started_at) = 4 THEN 'F'
+                 WHEN EXTRACT(MONTH from started_at) = 5 THEN 'G'
+                 WHEN EXTRACT(MONTH from started_at) = 6 THEN 'H'
+                 WHEN EXTRACT(MONTH from started_at) = 7 THEN 'I'
+                 WHEN EXTRACT(MONTH from started_at) = 8 THEN 'J'
+                 WHEN EXTRACT(MONTH from started_at) = 9 THEN 'K'
+                 ELSE 'L' END AS month, 
+          TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.aug2022`
+  UNION ALL
+  SELECT *, CASE WHEN EXTRACT(MONTH from started_at) = 11 THEN 'A' 
+                 WHEN EXTRACT(MONTH from started_at) = 12 THEN 'B'
+                 WHEN EXTRACT(MONTH from started_at) = 1 THEN 'C'
+                 WHEN EXTRACT(MONTH from started_at) = 2 THEN 'D'
+                 WHEN EXTRACT(MONTH from started_at) = 3 THEN 'E'
+                 WHEN EXTRACT(MONTH from started_at) = 4 THEN 'F'
+                 WHEN EXTRACT(MONTH from started_at) = 5 THEN 'G'
+                 WHEN EXTRACT(MONTH from started_at) = 6 THEN 'H'
+                 WHEN EXTRACT(MONTH from started_at) = 7 THEN 'I'
+                 WHEN EXTRACT(MONTH from started_at) = 8 THEN 'J'
+                 WHEN EXTRACT(MONTH from started_at) = 9 THEN 'K'
+                 ELSE 'L' END AS month, 
+          TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.sep2022`
+  UNION ALL
+  SELECT *, CASE WHEN EXTRACT(MONTH from started_at) = 11 THEN 'A' 
+                 WHEN EXTRACT(MONTH from started_at) = 12 THEN 'B'
+                 WHEN EXTRACT(MONTH from started_at) = 1 THEN 'C'
+                 WHEN EXTRACT(MONTH from started_at) = 2 THEN 'D'
+                 WHEN EXTRACT(MONTH from started_at) = 3 THEN 'E'
+                 WHEN EXTRACT(MONTH from started_at) = 4 THEN 'F'
+                 WHEN EXTRACT(MONTH from started_at) = 5 THEN 'G'
+                 WHEN EXTRACT(MONTH from started_at) = 6 THEN 'H'
+                 WHEN EXTRACT(MONTH from started_at) = 7 THEN 'I'
+                 WHEN EXTRACT(MONTH from started_at) = 8 THEN 'J'
+                 WHEN EXTRACT(MONTH from started_at) = 9 THEN 'K'
+                 ELSE 'L' END AS month, 
+          TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.oct2022`)
+
+----------In order to maintain the correct chronology of events, I assigned each month to a letter: ----------
+----------A = Nov. '21, B = Dec. '21, C = Jan. '22, D = Feb. '22, E = Mar. '22, F = Apr. '22 ----------
+----------G = May '22, H = Jun. '22, I = Jul. '22, J = Aug. '22, K = Sep. '22, L = Oct. '22 ----------
+
+----------The counts for each month are given in hundreds of thousands.----------
+
+  SELECT member_casual, month, COUNT(*)/100000 as count_in_hundredsofthousands
+  FROM (SELECT *
+        FROM allmonths
+        WHERE allmonths.ridelength > 0 AND allmonths.ridelength < 86400)
+  GROUP BY member_casual, month
+  ORDER BY member_casual, month;
+  
+  
+  
+  ----------QUERY 14: Median ride length (in minutes) by month and membership type.----------
+  
+  WITH allmonths AS (
+  
+  SELECT *, CASE WHEN EXTRACT(MONTH from started_at) = 11 THEN 'A' 
+                 WHEN EXTRACT(MONTH from started_at) = 12 THEN 'B'
+                 WHEN EXTRACT(MONTH from started_at) = 1 THEN 'C'
+                 WHEN EXTRACT(MONTH from started_at) = 2 THEN 'D'
+                 WHEN EXTRACT(MONTH from started_at) = 3 THEN 'E'
+                 WHEN EXTRACT(MONTH from started_at) = 4 THEN 'F'
+                 WHEN EXTRACT(MONTH from started_at) = 5 THEN 'G'
+                 WHEN EXTRACT(MONTH from started_at) = 6 THEN 'H'
+                 WHEN EXTRACT(MONTH from started_at) = 7 THEN 'I'
+                 WHEN EXTRACT(MONTH from started_at) = 8 THEN 'J'
+                 WHEN EXTRACT(MONTH from started_at) = 9 THEN 'K'
+                 ELSE 'L' END AS month, 
+          TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.nov2021`
+  UNION ALL
+  SELECT *, CASE WHEN EXTRACT(MONTH from started_at) = 11 THEN 'A' 
+                 WHEN EXTRACT(MONTH from started_at) = 12 THEN 'B'
+                 WHEN EXTRACT(MONTH from started_at) = 1 THEN 'C'
+                 WHEN EXTRACT(MONTH from started_at) = 2 THEN 'D'
+                 WHEN EXTRACT(MONTH from started_at) = 3 THEN 'E'
+                 WHEN EXTRACT(MONTH from started_at) = 4 THEN 'F'
+                 WHEN EXTRACT(MONTH from started_at) = 5 THEN 'G'
+                 WHEN EXTRACT(MONTH from started_at) = 6 THEN 'H'
+                 WHEN EXTRACT(MONTH from started_at) = 7 THEN 'I'
+                 WHEN EXTRACT(MONTH from started_at) = 8 THEN 'J'
+                 WHEN EXTRACT(MONTH from started_at) = 9 THEN 'K'
+                 ELSE 'L' END AS month, 
+          TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.dec2021`
+  UNION ALL
+  SELECT *, CASE WHEN EXTRACT(MONTH from started_at) = 11 THEN 'A' 
+                 WHEN EXTRACT(MONTH from started_at) = 12 THEN 'B'
+                 WHEN EXTRACT(MONTH from started_at) = 1 THEN 'C'
+                 WHEN EXTRACT(MONTH from started_at) = 2 THEN 'D'
+                 WHEN EXTRACT(MONTH from started_at) = 3 THEN 'E'
+                 WHEN EXTRACT(MONTH from started_at) = 4 THEN 'F'
+                 WHEN EXTRACT(MONTH from started_at) = 5 THEN 'G'
+                 WHEN EXTRACT(MONTH from started_at) = 6 THEN 'H'
+                 WHEN EXTRACT(MONTH from started_at) = 7 THEN 'I'
+                 WHEN EXTRACT(MONTH from started_at) = 8 THEN 'J'
+                 WHEN EXTRACT(MONTH from started_at) = 9 THEN 'K'
+                 ELSE 'L' END AS month, 
+          TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.jan2022`
+  UNION ALL
+  SELECT *, CASE WHEN EXTRACT(MONTH from started_at) = 11 THEN 'A' 
+                 WHEN EXTRACT(MONTH from started_at) = 12 THEN 'B'
+                 WHEN EXTRACT(MONTH from started_at) = 1 THEN 'C'
+                 WHEN EXTRACT(MONTH from started_at) = 2 THEN 'D'
+                 WHEN EXTRACT(MONTH from started_at) = 3 THEN 'E'
+                 WHEN EXTRACT(MONTH from started_at) = 4 THEN 'F'
+                 WHEN EXTRACT(MONTH from started_at) = 5 THEN 'G'
+                 WHEN EXTRACT(MONTH from started_at) = 6 THEN 'H'
+                 WHEN EXTRACT(MONTH from started_at) = 7 THEN 'I'
+                 WHEN EXTRACT(MONTH from started_at) = 8 THEN 'J'
+                 WHEN EXTRACT(MONTH from started_at) = 9 THEN 'K'
+                 ELSE 'L' END AS month, 
+          TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.feb2022`
+  UNION ALL
+  SELECT *, CASE WHEN EXTRACT(MONTH from started_at) = 11 THEN 'A' 
+                 WHEN EXTRACT(MONTH from started_at) = 12 THEN 'B'
+                 WHEN EXTRACT(MONTH from started_at) = 1 THEN 'C'
+                 WHEN EXTRACT(MONTH from started_at) = 2 THEN 'D'
+                 WHEN EXTRACT(MONTH from started_at) = 3 THEN 'E'
+                 WHEN EXTRACT(MONTH from started_at) = 4 THEN 'F'
+                 WHEN EXTRACT(MONTH from started_at) = 5 THEN 'G'
+                 WHEN EXTRACT(MONTH from started_at) = 6 THEN 'H'
+                 WHEN EXTRACT(MONTH from started_at) = 7 THEN 'I'
+                 WHEN EXTRACT(MONTH from started_at) = 8 THEN 'J'
+                 WHEN EXTRACT(MONTH from started_at) = 9 THEN 'K'
+                 ELSE 'L' END AS month, 
+          TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.mar2022`
+  UNION ALL
+  SELECT *, CASE WHEN EXTRACT(MONTH from started_at) = 11 THEN 'A' 
+                 WHEN EXTRACT(MONTH from started_at) = 12 THEN 'B'
+                 WHEN EXTRACT(MONTH from started_at) = 1 THEN 'C'
+                 WHEN EXTRACT(MONTH from started_at) = 2 THEN 'D'
+                 WHEN EXTRACT(MONTH from started_at) = 3 THEN 'E'
+                 WHEN EXTRACT(MONTH from started_at) = 4 THEN 'F'
+                 WHEN EXTRACT(MONTH from started_at) = 5 THEN 'G'
+                 WHEN EXTRACT(MONTH from started_at) = 6 THEN 'H'
+                 WHEN EXTRACT(MONTH from started_at) = 7 THEN 'I'
+                 WHEN EXTRACT(MONTH from started_at) = 8 THEN 'J'
+                 WHEN EXTRACT(MONTH from started_at) = 9 THEN 'K'
+                 ELSE 'L' END AS month, 
+          TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.apr2022`
+  UNION ALL
+  SELECT *, CASE WHEN EXTRACT(MONTH from started_at) = 11 THEN 'A' 
+                 WHEN EXTRACT(MONTH from started_at) = 12 THEN 'B'
+                 WHEN EXTRACT(MONTH from started_at) = 1 THEN 'C'
+                 WHEN EXTRACT(MONTH from started_at) = 2 THEN 'D'
+                 WHEN EXTRACT(MONTH from started_at) = 3 THEN 'E'
+                 WHEN EXTRACT(MONTH from started_at) = 4 THEN 'F'
+                 WHEN EXTRACT(MONTH from started_at) = 5 THEN 'G'
+                 WHEN EXTRACT(MONTH from started_at) = 6 THEN 'H'
+                 WHEN EXTRACT(MONTH from started_at) = 7 THEN 'I'
+                 WHEN EXTRACT(MONTH from started_at) = 8 THEN 'J'
+                 WHEN EXTRACT(MONTH from started_at) = 9 THEN 'K'
+                 ELSE 'L' END AS month, 
+          TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.may2022`
+  UNION ALL
+  SELECT *, CASE WHEN EXTRACT(MONTH from started_at) = 11 THEN 'A' 
+                 WHEN EXTRACT(MONTH from started_at) = 12 THEN 'B'
+                 WHEN EXTRACT(MONTH from started_at) = 1 THEN 'C'
+                 WHEN EXTRACT(MONTH from started_at) = 2 THEN 'D'
+                 WHEN EXTRACT(MONTH from started_at) = 3 THEN 'E'
+                 WHEN EXTRACT(MONTH from started_at) = 4 THEN 'F'
+                 WHEN EXTRACT(MONTH from started_at) = 5 THEN 'G'
+                 WHEN EXTRACT(MONTH from started_at) = 6 THEN 'H'
+                 WHEN EXTRACT(MONTH from started_at) = 7 THEN 'I'
+                 WHEN EXTRACT(MONTH from started_at) = 8 THEN 'J'
+                 WHEN EXTRACT(MONTH from started_at) = 9 THEN 'K'
+                 ELSE 'L' END AS month, 
+          TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.jun2022`
+  UNION ALL
+  SELECT *, CASE WHEN EXTRACT(MONTH from started_at) = 11 THEN 'A' 
+                 WHEN EXTRACT(MONTH from started_at) = 12 THEN 'B'
+                 WHEN EXTRACT(MONTH from started_at) = 1 THEN 'C'
+                 WHEN EXTRACT(MONTH from started_at) = 2 THEN 'D'
+                 WHEN EXTRACT(MONTH from started_at) = 3 THEN 'E'
+                 WHEN EXTRACT(MONTH from started_at) = 4 THEN 'F'
+                 WHEN EXTRACT(MONTH from started_at) = 5 THEN 'G'
+                 WHEN EXTRACT(MONTH from started_at) = 6 THEN 'H'
+                 WHEN EXTRACT(MONTH from started_at) = 7 THEN 'I'
+                 WHEN EXTRACT(MONTH from started_at) = 8 THEN 'J'
+                 WHEN EXTRACT(MONTH from started_at) = 9 THEN 'K'
+                 ELSE 'L' END AS month, 
+          TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.jul2022`
+  UNION ALL
+  SELECT *, CASE WHEN EXTRACT(MONTH from started_at) = 11 THEN 'A' 
+                 WHEN EXTRACT(MONTH from started_at) = 12 THEN 'B'
+                 WHEN EXTRACT(MONTH from started_at) = 1 THEN 'C'
+                 WHEN EXTRACT(MONTH from started_at) = 2 THEN 'D'
+                 WHEN EXTRACT(MONTH from started_at) = 3 THEN 'E'
+                 WHEN EXTRACT(MONTH from started_at) = 4 THEN 'F'
+                 WHEN EXTRACT(MONTH from started_at) = 5 THEN 'G'
+                 WHEN EXTRACT(MONTH from started_at) = 6 THEN 'H'
+                 WHEN EXTRACT(MONTH from started_at) = 7 THEN 'I'
+                 WHEN EXTRACT(MONTH from started_at) = 8 THEN 'J'
+                 WHEN EXTRACT(MONTH from started_at) = 9 THEN 'K'
+                 ELSE 'L' END AS month, 
+          TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.aug2022`
+  UNION ALL
+  SELECT *, CASE WHEN EXTRACT(MONTH from started_at) = 11 THEN 'A' 
+                 WHEN EXTRACT(MONTH from started_at) = 12 THEN 'B'
+                 WHEN EXTRACT(MONTH from started_at) = 1 THEN 'C'
+                 WHEN EXTRACT(MONTH from started_at) = 2 THEN 'D'
+                 WHEN EXTRACT(MONTH from started_at) = 3 THEN 'E'
+                 WHEN EXTRACT(MONTH from started_at) = 4 THEN 'F'
+                 WHEN EXTRACT(MONTH from started_at) = 5 THEN 'G'
+                 WHEN EXTRACT(MONTH from started_at) = 6 THEN 'H'
+                 WHEN EXTRACT(MONTH from started_at) = 7 THEN 'I'
+                 WHEN EXTRACT(MONTH from started_at) = 8 THEN 'J'
+                 WHEN EXTRACT(MONTH from started_at) = 9 THEN 'K'
+                 ELSE 'L' END AS month, 
+          TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.sep2022`
+  UNION ALL
+  SELECT *, CASE WHEN EXTRACT(MONTH from started_at) = 11 THEN 'A' 
+                 WHEN EXTRACT(MONTH from started_at) = 12 THEN 'B'
+                 WHEN EXTRACT(MONTH from started_at) = 1 THEN 'C'
+                 WHEN EXTRACT(MONTH from started_at) = 2 THEN 'D'
+                 WHEN EXTRACT(MONTH from started_at) = 3 THEN 'E'
+                 WHEN EXTRACT(MONTH from started_at) = 4 THEN 'F'
+                 WHEN EXTRACT(MONTH from started_at) = 5 THEN 'G'
+                 WHEN EXTRACT(MONTH from started_at) = 6 THEN 'H'
+                 WHEN EXTRACT(MONTH from started_at) = 7 THEN 'I'
+                 WHEN EXTRACT(MONTH from started_at) = 8 THEN 'J'
+                 WHEN EXTRACT(MONTH from started_at) = 9 THEN 'K'
+                 ELSE 'L' END AS month, 
+          TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.oct2022`)
+
+----------In order to maintain the correct chronology of events, I assigned each month to a letter: ----------
+----------A = Nov. '21, B = Dec. '21, C = Jan. '22, D = Feb. '22, E = Mar. '22, F = Apr. '22 ----------
+----------G = May '22, H = Jun. '22, I = Jul. '22, J = Aug. '22, K = Sep. '22, L = Oct. '22 ----------
+
+
+  SELECT member_casual, month, median_ridelength/60 AS med_ridelength
+  FROM (SELECT *, PERCENTILE_CONT(ridelength, 0.5) OVER(PARTITION BY member_casual, month) AS median_ridelength
+        FROM allmonths
+        WHERE allmonths.ridelength > 0 AND allmonths.ridelength < 86400)
+  GROUP BY member_casual, month, med_ridelength
+  ORDER BY member_casual, month;
+  
+  
+  ----------QUERY 15: Standard deviation of the monthly median ride lengths (from Query 14) by membership type.----------
+  
+  WITH allmonths AS (
+  
+  SELECT *, CASE WHEN EXTRACT(MONTH from started_at) = 11 THEN 'A' 
+                 WHEN EXTRACT(MONTH from started_at) = 12 THEN 'B'
+                 WHEN EXTRACT(MONTH from started_at) = 1 THEN 'C'
+                 WHEN EXTRACT(MONTH from started_at) = 2 THEN 'D'
+                 WHEN EXTRACT(MONTH from started_at) = 3 THEN 'E'
+                 WHEN EXTRACT(MONTH from started_at) = 4 THEN 'F'
+                 WHEN EXTRACT(MONTH from started_at) = 5 THEN 'G'
+                 WHEN EXTRACT(MONTH from started_at) = 6 THEN 'H'
+                 WHEN EXTRACT(MONTH from started_at) = 7 THEN 'I'
+                 WHEN EXTRACT(MONTH from started_at) = 8 THEN 'J'
+                 WHEN EXTRACT(MONTH from started_at) = 9 THEN 'K'
+                 ELSE 'L' END AS month, 
+          TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.nov2021`
+  UNION ALL
+  SELECT *, CASE WHEN EXTRACT(MONTH from started_at) = 11 THEN 'A' 
+                 WHEN EXTRACT(MONTH from started_at) = 12 THEN 'B'
+                 WHEN EXTRACT(MONTH from started_at) = 1 THEN 'C'
+                 WHEN EXTRACT(MONTH from started_at) = 2 THEN 'D'
+                 WHEN EXTRACT(MONTH from started_at) = 3 THEN 'E'
+                 WHEN EXTRACT(MONTH from started_at) = 4 THEN 'F'
+                 WHEN EXTRACT(MONTH from started_at) = 5 THEN 'G'
+                 WHEN EXTRACT(MONTH from started_at) = 6 THEN 'H'
+                 WHEN EXTRACT(MONTH from started_at) = 7 THEN 'I'
+                 WHEN EXTRACT(MONTH from started_at) = 8 THEN 'J'
+                 WHEN EXTRACT(MONTH from started_at) = 9 THEN 'K'
+                 ELSE 'L' END AS month, 
+          TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.dec2021`
+  UNION ALL
+  SELECT *, CASE WHEN EXTRACT(MONTH from started_at) = 11 THEN 'A' 
+                 WHEN EXTRACT(MONTH from started_at) = 12 THEN 'B'
+                 WHEN EXTRACT(MONTH from started_at) = 1 THEN 'C'
+                 WHEN EXTRACT(MONTH from started_at) = 2 THEN 'D'
+                 WHEN EXTRACT(MONTH from started_at) = 3 THEN 'E'
+                 WHEN EXTRACT(MONTH from started_at) = 4 THEN 'F'
+                 WHEN EXTRACT(MONTH from started_at) = 5 THEN 'G'
+                 WHEN EXTRACT(MONTH from started_at) = 6 THEN 'H'
+                 WHEN EXTRACT(MONTH from started_at) = 7 THEN 'I'
+                 WHEN EXTRACT(MONTH from started_at) = 8 THEN 'J'
+                 WHEN EXTRACT(MONTH from started_at) = 9 THEN 'K'
+                 ELSE 'L' END AS month, 
+          TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.jan2022`
+  UNION ALL
+  SELECT *, CASE WHEN EXTRACT(MONTH from started_at) = 11 THEN 'A' 
+                 WHEN EXTRACT(MONTH from started_at) = 12 THEN 'B'
+                 WHEN EXTRACT(MONTH from started_at) = 1 THEN 'C'
+                 WHEN EXTRACT(MONTH from started_at) = 2 THEN 'D'
+                 WHEN EXTRACT(MONTH from started_at) = 3 THEN 'E'
+                 WHEN EXTRACT(MONTH from started_at) = 4 THEN 'F'
+                 WHEN EXTRACT(MONTH from started_at) = 5 THEN 'G'
+                 WHEN EXTRACT(MONTH from started_at) = 6 THEN 'H'
+                 WHEN EXTRACT(MONTH from started_at) = 7 THEN 'I'
+                 WHEN EXTRACT(MONTH from started_at) = 8 THEN 'J'
+                 WHEN EXTRACT(MONTH from started_at) = 9 THEN 'K'
+                 ELSE 'L' END AS month, 
+          TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.feb2022`
+  UNION ALL
+  SELECT *, CASE WHEN EXTRACT(MONTH from started_at) = 11 THEN 'A' 
+                 WHEN EXTRACT(MONTH from started_at) = 12 THEN 'B'
+                 WHEN EXTRACT(MONTH from started_at) = 1 THEN 'C'
+                 WHEN EXTRACT(MONTH from started_at) = 2 THEN 'D'
+                 WHEN EXTRACT(MONTH from started_at) = 3 THEN 'E'
+                 WHEN EXTRACT(MONTH from started_at) = 4 THEN 'F'
+                 WHEN EXTRACT(MONTH from started_at) = 5 THEN 'G'
+                 WHEN EXTRACT(MONTH from started_at) = 6 THEN 'H'
+                 WHEN EXTRACT(MONTH from started_at) = 7 THEN 'I'
+                 WHEN EXTRACT(MONTH from started_at) = 8 THEN 'J'
+                 WHEN EXTRACT(MONTH from started_at) = 9 THEN 'K'
+                 ELSE 'L' END AS month, 
+          TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.mar2022`
+  UNION ALL
+  SELECT *, CASE WHEN EXTRACT(MONTH from started_at) = 11 THEN 'A' 
+                 WHEN EXTRACT(MONTH from started_at) = 12 THEN 'B'
+                 WHEN EXTRACT(MONTH from started_at) = 1 THEN 'C'
+                 WHEN EXTRACT(MONTH from started_at) = 2 THEN 'D'
+                 WHEN EXTRACT(MONTH from started_at) = 3 THEN 'E'
+                 WHEN EXTRACT(MONTH from started_at) = 4 THEN 'F'
+                 WHEN EXTRACT(MONTH from started_at) = 5 THEN 'G'
+                 WHEN EXTRACT(MONTH from started_at) = 6 THEN 'H'
+                 WHEN EXTRACT(MONTH from started_at) = 7 THEN 'I'
+                 WHEN EXTRACT(MONTH from started_at) = 8 THEN 'J'
+                 WHEN EXTRACT(MONTH from started_at) = 9 THEN 'K'
+                 ELSE 'L' END AS month, 
+          TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.apr2022`
+  UNION ALL
+  SELECT *, CASE WHEN EXTRACT(MONTH from started_at) = 11 THEN 'A' 
+                 WHEN EXTRACT(MONTH from started_at) = 12 THEN 'B'
+                 WHEN EXTRACT(MONTH from started_at) = 1 THEN 'C'
+                 WHEN EXTRACT(MONTH from started_at) = 2 THEN 'D'
+                 WHEN EXTRACT(MONTH from started_at) = 3 THEN 'E'
+                 WHEN EXTRACT(MONTH from started_at) = 4 THEN 'F'
+                 WHEN EXTRACT(MONTH from started_at) = 5 THEN 'G'
+                 WHEN EXTRACT(MONTH from started_at) = 6 THEN 'H'
+                 WHEN EXTRACT(MONTH from started_at) = 7 THEN 'I'
+                 WHEN EXTRACT(MONTH from started_at) = 8 THEN 'J'
+                 WHEN EXTRACT(MONTH from started_at) = 9 THEN 'K'
+                 ELSE 'L' END AS month, 
+          TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.may2022`
+  UNION ALL
+  SELECT *, CASE WHEN EXTRACT(MONTH from started_at) = 11 THEN 'A' 
+                 WHEN EXTRACT(MONTH from started_at) = 12 THEN 'B'
+                 WHEN EXTRACT(MONTH from started_at) = 1 THEN 'C'
+                 WHEN EXTRACT(MONTH from started_at) = 2 THEN 'D'
+                 WHEN EXTRACT(MONTH from started_at) = 3 THEN 'E'
+                 WHEN EXTRACT(MONTH from started_at) = 4 THEN 'F'
+                 WHEN EXTRACT(MONTH from started_at) = 5 THEN 'G'
+                 WHEN EXTRACT(MONTH from started_at) = 6 THEN 'H'
+                 WHEN EXTRACT(MONTH from started_at) = 7 THEN 'I'
+                 WHEN EXTRACT(MONTH from started_at) = 8 THEN 'J'
+                 WHEN EXTRACT(MONTH from started_at) = 9 THEN 'K'
+                 ELSE 'L' END AS month, 
+          TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.jun2022`
+  UNION ALL
+  SELECT *, CASE WHEN EXTRACT(MONTH from started_at) = 11 THEN 'A' 
+                 WHEN EXTRACT(MONTH from started_at) = 12 THEN 'B'
+                 WHEN EXTRACT(MONTH from started_at) = 1 THEN 'C'
+                 WHEN EXTRACT(MONTH from started_at) = 2 THEN 'D'
+                 WHEN EXTRACT(MONTH from started_at) = 3 THEN 'E'
+                 WHEN EXTRACT(MONTH from started_at) = 4 THEN 'F'
+                 WHEN EXTRACT(MONTH from started_at) = 5 THEN 'G'
+                 WHEN EXTRACT(MONTH from started_at) = 6 THEN 'H'
+                 WHEN EXTRACT(MONTH from started_at) = 7 THEN 'I'
+                 WHEN EXTRACT(MONTH from started_at) = 8 THEN 'J'
+                 WHEN EXTRACT(MONTH from started_at) = 9 THEN 'K'
+                 ELSE 'L' END AS month, 
+          TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.jul2022`
+  UNION ALL
+  SELECT *, CASE WHEN EXTRACT(MONTH from started_at) = 11 THEN 'A' 
+                 WHEN EXTRACT(MONTH from started_at) = 12 THEN 'B'
+                 WHEN EXTRACT(MONTH from started_at) = 1 THEN 'C'
+                 WHEN EXTRACT(MONTH from started_at) = 2 THEN 'D'
+                 WHEN EXTRACT(MONTH from started_at) = 3 THEN 'E'
+                 WHEN EXTRACT(MONTH from started_at) = 4 THEN 'F'
+                 WHEN EXTRACT(MONTH from started_at) = 5 THEN 'G'
+                 WHEN EXTRACT(MONTH from started_at) = 6 THEN 'H'
+                 WHEN EXTRACT(MONTH from started_at) = 7 THEN 'I'
+                 WHEN EXTRACT(MONTH from started_at) = 8 THEN 'J'
+                 WHEN EXTRACT(MONTH from started_at) = 9 THEN 'K'
+                 ELSE 'L' END AS month, 
+          TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.aug2022`
+  UNION ALL
+  SELECT *, CASE WHEN EXTRACT(MONTH from started_at) = 11 THEN 'A' 
+                 WHEN EXTRACT(MONTH from started_at) = 12 THEN 'B'
+                 WHEN EXTRACT(MONTH from started_at) = 1 THEN 'C'
+                 WHEN EXTRACT(MONTH from started_at) = 2 THEN 'D'
+                 WHEN EXTRACT(MONTH from started_at) = 3 THEN 'E'
+                 WHEN EXTRACT(MONTH from started_at) = 4 THEN 'F'
+                 WHEN EXTRACT(MONTH from started_at) = 5 THEN 'G'
+                 WHEN EXTRACT(MONTH from started_at) = 6 THEN 'H'
+                 WHEN EXTRACT(MONTH from started_at) = 7 THEN 'I'
+                 WHEN EXTRACT(MONTH from started_at) = 8 THEN 'J'
+                 WHEN EXTRACT(MONTH from started_at) = 9 THEN 'K'
+                 ELSE 'L' END AS month, 
+          TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.sep2022`
+  UNION ALL
+  SELECT *, CASE WHEN EXTRACT(MONTH from started_at) = 11 THEN 'A' 
+                 WHEN EXTRACT(MONTH from started_at) = 12 THEN 'B'
+                 WHEN EXTRACT(MONTH from started_at) = 1 THEN 'C'
+                 WHEN EXTRACT(MONTH from started_at) = 2 THEN 'D'
+                 WHEN EXTRACT(MONTH from started_at) = 3 THEN 'E'
+                 WHEN EXTRACT(MONTH from started_at) = 4 THEN 'F'
+                 WHEN EXTRACT(MONTH from started_at) = 5 THEN 'G'
+                 WHEN EXTRACT(MONTH from started_at) = 6 THEN 'H'
+                 WHEN EXTRACT(MONTH from started_at) = 7 THEN 'I'
+                 WHEN EXTRACT(MONTH from started_at) = 8 THEN 'J'
+                 WHEN EXTRACT(MONTH from started_at) = 9 THEN 'K'
+                 ELSE 'L' END AS month, 
+          TIMESTAMP_DIFF(ended_at, started_at, SECOND) AS ridelength
+  FROM `decoded-cove-381306.Months.oct2022`)
+
+----------In order to maintain the correct chronology of events, I assigned each month to a letter: ----------
+----------A = Nov. '21, B = Dec. '21, C = Jan. '22, D = Feb. '22, E = Mar. '22, F = Apr. '22 ----------
+----------G = May '22, H = Jun. '22, I = Jul. '22, J = Aug. '22, K = Sep. '22, L = Oct. '22 ----------
+
+SELECT member_casual, STDDEV(med_ridelength) AS sd_med_ridelength
+FROM (
+  SELECT member_casual, month, median_ridelength/60 AS med_ridelength
+  FROM (SELECT *, PERCENTILE_CONT(ridelength, 0.5) OVER(PARTITION BY member_casual, month) AS median_ridelength
+        FROM allmonths
+        WHERE allmonths.ridelength > 0 AND allmonths.ridelength < 86400)
+  GROUP BY member_casual, month, med_ridelength
+  ORDER BY member_casual, month)
+GROUP BY member_casual;
+  
                                                   
 
