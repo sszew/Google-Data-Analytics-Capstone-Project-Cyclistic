@@ -10,8 +10,7 @@ In order to showcase my capabilities with different software, I completed the pr
 
 2  **SQL** and 
                 A) **Tableau** When I completed the project again, I conducted the data analysis in SQL, using Google's BigQuery service, and created the visualizations in Tableau. My SQL script can be found by clicking the "SQL Script" link above, and my Tableau visualizations can be found here: https://public.tableau.com/authoring/Szewczyk-CyclisticProject/Szewczyk-CyclisticProject#1
-
-               B) **Power BI:** After conducting the analysis in SQL, I also created in Power BI. A PDF of my Power BI visualizations can be found here: https://drive.google.com/file/d/1UPkypyscA2J1XbR4ja4Fvt8Vw-mSYvfN/view?usp=sharing (the PDF does not allow you to click on the buttons on the title page, but you can simply scroll through the document to see all of the visualizations).
+                B) **Power BI:** After conducting the analysis in SQL, I also created in Power BI. A PDF of my Power BI visualizations can be found here: https://drive.google.com/file/d/1UPkypyscA2J1XbR4ja4Fvt8Vw-mSYvfN/view?usp=sharing (the PDF does not allow you to click on the buttons on the title page, but you can simply scroll through the document to see all of the visualizations).
 
 
 _**Please note that the analyses and, thus, results for both of these methods are exactly the same. Completing the project twice was simply a way for me to showcase my skillset and improve my understanding of these tools.**_
