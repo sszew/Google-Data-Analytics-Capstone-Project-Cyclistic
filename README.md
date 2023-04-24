@@ -14,7 +14,7 @@ In order to showcase my capabilities with different software, I completed the pr
 
     B. **Power BI:** After conducting the analysis in SQL, I also created visualizations in Power BI. A PDF of my Power BI visualizations can be found here: https://drive.google.com/file/d/1UPkypyscA2J1XbR4ja4Fvt8Vw-mSYvfN/view?usp=sharing (the PDF does not allow you to click on the buttons on the title page, but you can simply scroll through the document to see all of the visualizations).
 
-_**Please note that the analyses and, thus, results for all of these methods are exactly the same -- with the exception of the interactive map and forecasting visualization in the Tableau document. Completing the project multiple times was simply a way for me to showcase my skillset and improve my understanding of these tools.**_
+_**Please note that the analyses and, thus, results for all of these methods are exactly the same (the Tableau document, however, includes two visualizations that are not found in the other documents). Completing the project multiple times was simply a way for me to showcase my skillset and improve my understanding of these tools.**_
 
 The datasets I used for this project can be found at this link: https://divvy-tripdata.s3.amazonaws.com/index.html (I used the datasets from the months Nov. 2021 - Oct. 2022).
 
