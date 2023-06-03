@@ -4,7 +4,7 @@ This page contains my capstone project for the Google Data Analytics Professiona
 
 The Google Slides presentation that contains my full analysis can be found here: https://docs.google.com/presentation/d/1Aq0FibYiF0786xv_BOLffQiyBRzEG5hCepiRGYpT9Ag/edit?usp=sharing
 
-In order to showcase my capabilities with different software, I completed the project twice, using different tools each time:
+In order to showcase my capabilities with different software, I completed the project multiple times, using different tools each time:
 
 1) **R programming:** First, I conducted the data analysis and created the visualizations entirely in R Studio. The visualizations in the Google Slides presentation were the ones I created in R studio. My R script can be found by clicking the "R Script" link above.
 
