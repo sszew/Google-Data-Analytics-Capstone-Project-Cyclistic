@@ -142,8 +142,8 @@ day_of_week_percent_dataframe['proportions'] = day_of_week_percent_dataframe['pr
 day_of_week_percent_dataframe.reset_index(inplace=True)
 
 # Stacked bar chart: percentage of each membership group's rides started during each day of the week.
-sns.barplot(data = day_of_week_percent_dataframe, x = 'day_of_week', y = 'proportions', hue = 'member_casual', palette = mem_cas_colors, \
-            order = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']).set(title = 'Percentage of Rides on Each Day of the Week', \
+daily_percentage_bar = sns.barplot(data = day_of_week_percent_dataframe, x = 'day_of_week', y = 'proportions', hue = 'member_casual', palette = mem_cas_colors, \
+                                   order = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']).set(title = 'Percentage of Rides on Each Day of the Week', \
                                                                                                         xlabel = '', ylabel = 'percent')
 plt.xticks(rotation=45)
 plt.legend(bbox_to_anchor=(1, 0.5), loc='center left', title = '')
@@ -163,8 +163,8 @@ day_of_week_ridelength_dataframe = day_of_week_ridelength.to_frame(name = 'ridel
 
 day_of_week_ridelength_dataframe.reset_index(inplace=True)
 
-sns.pointplot(data = day_of_week_ridelength_dataframe, x = 'day_of_week', y = 'ridelength', hue = 'member_casual', palette = mem_cas_colors, \
-              order = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']).set(title = 'Median Ridelength on Each Day of the Week', \
+daily_ridelength_pointplot = sns.pointplot(data = day_of_week_ridelength_dataframe, x = 'day_of_week', y = 'ridelength', hue = 'member_casual', palette = mem_cas_colors, \
+                                           order = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']).set(title = 'Median Ridelength on Each Day of the Week', \
                                                                                                          xlabel = '', ylabel = 'Ride Length (in minutes)')
 plt.xticks(rotation=45)
 plt.legend(bbox_to_anchor=(1, 0.5), loc='center left', title = '')
@@ -189,7 +189,7 @@ weekpart_pivot = pd.pivot_table(weekpart_dataframe, index = 'member_casual', val
 
 
 # Stacked bar chart: percentage of each membership group's rides started during each part of the day.
-weekpart_pivot.plot(kind = 'bar', stacked = True, color = ['gold', 'green'], \
+weekpart_percent_bar = weekpart_pivot.plot(kind = 'bar', stacked = True, color = ['gold', 'green'], \
                                         title = 'Percentage of Rides on Weekdays vs. Weekends', xlabel = '', ylabel = '') \
                                         .set_xticklabels(['Casual', 'Member'])
 plt.xticks(rotation=0)
@@ -206,7 +206,7 @@ weekpart_ridelength_dataframe = weekpart_ridelength.to_frame(name = 'ridelength'
 weekpart_ridelength_dataframe.reset_index(inplace=True)
 
 #Bar plot: Median ridelength by part of week and membership group
-sns.barplot(data = weekpart_ridelength_dataframe, x = 'weekpart', y = 'ridelength', hue = 'member_casual', palette = mem_cas_colors) \
+weekpart_ridelength_bar = sns.barplot(data = weekpart_ridelength_dataframe, x = 'weekpart', y = 'ridelength', hue = 'member_casual', palette = mem_cas_colors) \
                             .set(title = "Median Ride Length on Weekdays vs. Weekends", xlabel='', ylabel='Median Ride Length (in minutes)', \
                                  xticklabels=["Weekdays", "Weekends"])
 plt.legend([],[], frameon=False)
@@ -221,9 +221,9 @@ year_ridelength_dataframe = year_ridelength.to_frame(name = 'ridelength')
 year_ridelength_dataframe.reset_index(inplace=True)
 
 #Point plot: median ridelength for each month
-sns.pointplot(data = year_ridelength_dataframe, x = 'Month_Year', y = 'ridelength', hue = 'member_casual', palette = mem_cas_colors, \
-              order = ['Nov 2021', 'Dec 2021', 'Jan 2022', 'Feb 2022', 'Mar 2022', 'Apr 2022', 'May 2022', 'Jun 2022', 'Jul 2022', 'Aug 2022', 'Sep 2022', 'Oct 2022']) \
-              .set(title = 'Median Ride Length by Month', xlabel = '', ylabel = 'Ride Length (in minutes)')
+ridelength_monthly_pointplot = sns.pointplot(data = year_ridelength_dataframe, x = 'Month_Year', y = 'ridelength', hue = 'member_casual', palette = mem_cas_colors, \
+                                             order = ['Nov 2021', 'Dec 2021', 'Jan 2022', 'Feb 2022', 'Mar 2022', 'Apr 2022', 'May 2022', 'Jun 2022', 'Jul 2022', 'Aug 2022', 'Sep 2022', 'Oct 2022']) \
+                                              .set(title = 'Median Ride Length by Month', xlabel = '', ylabel = 'Ride Length (in minutes)')
 plt.xticks(rotation=45)
 plt.legend(bbox_to_anchor=(1, 0.5), loc='center left', title = '')
 
@@ -242,9 +242,9 @@ year_ride_dataframe.reset_index(inplace=True)
 
 
 # Point plot: number of rides during each month
-sns.pointplot(data = year_ride_dataframe, x = 'Month_Year', y = 'rides', hue = 'member_casual', palette = mem_cas_colors, \
-              order = ['Nov 2021', 'Dec 2021', 'Jan 2022', 'Feb 2022', 'Mar 2022', 'Apr 2022', 'May 2022', 'Jun 2022', 'Jul 2022', 'Aug 2022', 'Sep 2022', 'Oct 2022']) \
-              .set(title = 'Number of Rides by Month', xlabel = '', ylabel = '# of Rides')
+rides_monthly_pointplot = sns.pointplot(data = year_ride_dataframe, x = 'Month_Year', y = 'rides', hue = 'member_casual', palette = mem_cas_colors, \
+                                        order = ['Nov 2021', 'Dec 2021', 'Jan 2022', 'Feb 2022', 'Mar 2022', 'Apr 2022', 'May 2022', 'Jun 2022', 'Jul 2022', 'Aug 2022', 'Sep 2022', 'Oct 2022']) \
+                                        .set(title = 'Number of Rides by Month', xlabel = '', ylabel = '# of Rides')
 plt.xticks(rotation=45)
 plt.legend(bbox_to_anchor=(1, 0.5), loc='center left', title = '')
 
