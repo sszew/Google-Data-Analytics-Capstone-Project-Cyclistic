@@ -206,10 +206,10 @@ weekpart_ridelength_dataframe = weekpart_ridelength.to_frame(name = 'ridelength'
 weekpart_ridelength_dataframe.reset_index(inplace=True)
 
 #Bar plot: Median ridelength by part of week and membership group
-weekpart_ridelength_bar = sns.barplot(data = weekpart_ridelength_dataframe, x = 'weekpart', y = 'ridelength', hue = 'member_casual', palette = mem_cas_colors) \
-                            .set(title = "Median Ride Length on Weekdays vs. Weekends", xlabel='', ylabel='Median Ride Length (in minutes)', \
-                                 xticklabels=["Weekdays", "Weekends"])
-plt.legend([],[], frameon=False)
+weekpart_ridelength_bar = sns.barplot(data = weekpart_ridelength_dataframe, x = 'member_casual', y = 'ridelength', hue = 'weekpart', palette = ['gold', 'green']) \
+                            .set(title = "Median Ride Length on Weekdays vs. Weekends", xlabel='', ylabel='Median Ride Length (in minutes)')
+plt.legend(bbox_to_anchor=(1, 0.5), loc='center left', title = 'Part of Week')
+
 
 # Calculate the median ridelength over the year for each membership group.
 year_ridelength = allmonths.groupby(['member_casual', 'Month_Year'])['ridelength'].median()
