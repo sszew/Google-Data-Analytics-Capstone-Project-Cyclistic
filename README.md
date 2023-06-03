@@ -8,7 +8,9 @@ In order to showcase my capabilities with different software, I completed the pr
 
 1) **R programming:** First, I conducted the data analysis and created the visualizations entirely in R Studio. The visualizations in the Google Slides presentation were the ones I created in R studio. My R script can be found by clicking the "R Script" link above.
 
-2) **SQL** and 
+2) **Python:** Next, I conducted the analysis and created the visualizations again using Python. My Python script can be found by clicking the "Python Script" link above, and the visualizations can be found at the following link: https://docs.google.com/presentation/d/1FRIlXF3MGY4bXbPSo82U8E5tIOP7QimZ9cz8aGTnfuY/edit?usp=sharing
+
+3) **SQL** and 
 
     A. **Tableau:** When I completed the project again, I conducted the data analysis in SQL, using Google's BigQuery service, and created the visualizations in Tableau. My SQL script can be found by clicking the "SQL Script" link above, and my Tableau visualizations can be found here: https://public.tableau.com/app/profile/scottie.szewczyk/viz/Szewczyk-CyclisticProject/Szewczyk-CyclisticProject
 
