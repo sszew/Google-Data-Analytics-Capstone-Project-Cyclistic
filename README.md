@@ -8,7 +8,7 @@ In order to showcase my capabilities with different software, I completed the pr
 
 1) **R programming:** First, I conducted the data analysis and created the visualizations entirely in R Studio. My R script can be found by opening the Markdown file **szewczyk_google_capstone_R.md**
 
-2) **Python:** Next, I conducted the analysis and created the visualizations again using Python. My Python script can be found by opening the Jupyter Notebook file **szewczyk_Google_Capstone_python.ipynb**
+2) **Python:** Next, I conducted the analysis and created the visualizations again using Python. My Python script can be found by opening the notebook file **szewczyk_Google_Capstone_python.ipynb**
 
 3) **SQL** and 
 
