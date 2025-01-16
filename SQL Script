@@ -1,4 +1,7 @@
-                                                               DATA CLEANING
+SQL SCRIPT FOR GOOGLE DATA ANALYTICS CAPSTONE PROJECT
+SCOTTIE SZEWCZYK
+
+DATA CLEANING
                                                             
 ----------QUERY 1: Checking for invalid entries in the "member_casual" column, referring to the membership status of a user. A user can either----------
 ----------be a "member" or a "casual" rider. There were no invalid entries in the dataset.----------
