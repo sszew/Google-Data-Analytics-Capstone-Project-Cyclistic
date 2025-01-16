@@ -18,8 +18,5 @@ In order to showcase my capabilities with different software, I completed the pr
 
 _**Please note that the analyses and, thus, results for all of these methods are exactly the same (the Tableau document, however, includes two visualizations that are not found in the other documents). Completing the project multiple times was simply a way for me to showcase my skillset and improve my understanding of these tools.**_
 
-The datasets I used for this project can be found at this link: https://divvy-tripdata.s3.amazonaws.com/index.html (I used the datasets from the months Nov. 2021 - Oct. 2022).
-
-
 
  
