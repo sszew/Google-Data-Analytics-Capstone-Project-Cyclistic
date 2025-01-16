@@ -1,14 +1,14 @@
 # Google Data Analytics Professional Certificate Capstone Project (Cyclistic) - Scottie Szewczyk
 
-This page contains my capstone project for the Google Data Analytics Professional Certificate program. For this project, I analyzed 12 months of ride data, encompassing more than 5 million observations, for a fictional rideshare bicycle company called Cyclistic in order to determine the ways in which riders of different membership types used the company’s bicycles differently.
+This page contains my capstone project for the Google Data Analytics Professional Certificate program. For this project, I analyzed 12 months of ride data, encompassing more than 5 million observations, for a fictional rideshare bicycle company called Cyclistic.
 
-The Google Slides presentation that contains my full analysis can be found here: https://docs.google.com/presentation/d/1Aq0FibYiF0786xv_BOLffQiyBRzEG5hCepiRGYpT9Ag/edit?usp=sharing
+**The goal of this analysis was to understand how annual Members and Guest riders used the company’s bikes differently.**
 
 In order to showcase my capabilities with different software, I completed the project multiple times, using different tools each time:
 
-1) **R programming:** First, I conducted the data analysis and created the visualizations entirely in R Studio. The visualizations in the Google Slides presentation were the ones I created in R studio. My R script can be found by clicking the "R Script" link above.
+1) **R programming:** First, I conducted the data analysis and created the visualizations entirely in R Studio. My R script can be found by opening the Markdown file szewczyk_google_capstone_R.md
 
-2) **Python:** Next, I conducted the analysis and created the visualizations again using Python. My Python script can be found by clicking the "Python Script" link above, and the visualizations can be found at the following link: https://docs.google.com/presentation/d/1FRIlXF3MGY4bXbPSo82U8E5tIOP7QimZ9cz8aGTnfuY/edit?usp=sharing
+2) **Python:** Next, I conducted the analysis and created the visualizations again using Python. My Python script can be found by opening the Jupyter Notebook file szewczyk_Google_Capstone_python.ipynb
 
 3) **SQL** and 
 
